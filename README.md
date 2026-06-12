@@ -117,6 +117,63 @@ fonts                ──►    타입 스케일 + 폰트 스택
 그래서 **새 톤 추가 = 13줄짜리 블록 하나**, **새 변형 추가 = CSS 한 블록**이고,
 서로의 조합은 공짜로 생깁니다. `data-tone`을 컨테이너에 걸면 서브트리 기본 톤도 바뀝니다.
 
+## 전문가 모드 — 다이어그램도 토큰을 입는다
+
+개발자/설계자를 위한 SVG 다이어그램 컴포넌트: **순서도(FlowDiagram) · 시퀀스
+(SequenceDiagram) · 상태 머신**(FlowDiagram + `state/initial/final`). 데이터는 순수
+객체, 시각 언어는 전부 테마 토큰입니다 — 테마를 바꾸면 다이어그램이 다시 태어납니다.
+
+```tsx
+import { FlowDiagram, SequenceDiagram, downloadSvg } from './diagram'
+
+<FlowDiagram
+  direction="down"            // down | right
+  edgeStyle="smooth"          // smooth(곡선) | orthogonal(직각)
+  nodes={[
+    { id: 'start', kind: 'terminal', label: '시작', tone: 'brand' },
+    { id: 'check', kind: 'decision', label: '유효?' },
+    { id: 'issue', kind: 'subroutine', label: 'JWT 발급', variant: 'solid' },
+    // kind: process · decision · terminal · io · subroutine · state · initial · final
+  ]}
+  edges={[
+    { from: 'start', to: 'check' },
+    { from: 'check', to: 'issue', label: '예', tone: 'success' },
+    { from: 'check', to: 'start', label: '재시도', dashed: true },  // 루프백 자동 우회
+    { from: 'issue', to: 'issue', label: '갱신' },                  // 셀프 루프
+    { from: 'issue', to: 'done', active: true },                    // 흐르는 점선 강조
+  ]}
+/>
+
+<SequenceDiagram
+  actors={[{ id: 'app', label: '클라이언트', tone: 'brand' }, …]}
+  messages={[
+    { from: 'app', to: 'api', label: 'POST /payments' },            // sync
+    { from: 'api', to: 'app', label: '201', kind: 'return' },       // 점선 + 빈 화살촉
+    { from: 'api', to: 'app', label: 'webhook', kind: 'async' },
+    { from: 'api', to: 'api', label: '검증' },                       // self 루프
+  ]}
+/>  {/* 활성 구간(activation bar)은 sync/return 호출 스택에서 자동 계산 */}
+```
+
+작동 원리 — UI 컴포넌트와 똑같은 규칙:
+
+| 다이어그램 요소 | 소비하는 토큰 |
+|---|---|
+| 노드 색 | `data-tone × data-variant` — tones.css 리매핑 **재사용** |
+| 노드 모서리 | radius 퍼스널리티 (`--radius-control/-2/-3`) — sharp 테마 = 각진 노드 |
+| 선 굵기 · 화살촉 | `--border-width` (2px = 브루탈리스트 다이어그램) |
+| 간격 | `--space-unit` — 밀도 퍼스널리티에 비례 |
+| 라벨 폰트 | `--font-body`, 대비 보장된 `--tone-11/12` |
+| `active` 간선 흐름 속도 | 모션 토큰 `--dur-3` (energy 퍼스널리티) |
+
+- **자동 레이아웃**: 의존성 0의 계층형(Sugiyama-lite) 엔진 — 역방향 간선 검출(루프백
+  레인 우회), 최장 경로 레이어링, barycenter 교차 최소화, 분기 부채꼴, 레이어 건너뛰기
+  우회. 수십 노드 규모용 휴리스틱이며 수백 노드급은 ELK/dagre를 어댑터로 권장.
+- **SVG 내보내기**: `downloadSvg(svgEl, '이름')` — getComputedStyle로 현재 테마 값을
+  presentation 속성으로 구워 넣은 **standalone SVG**. 문서/위키/Figma에 바로.
+- 노드 크기는 canvas `measureText`로 실측(한글 폭 정확), 토큰 수치는
+  `useDiagramMetrics`가 CSS 변수를 읽어 레이아웃에 공급합니다.
+
 ## 확장 레시피
 
 ### 1. 새 변형 추가 — "glow" 버튼
@@ -215,6 +272,7 @@ src/
   themes/      # ★ 디자인 시스템들이 사는 곳 (1테마 = 1객체)
   ui/          # 파라미터화된 컴포넌트 16종
     styles/         # 컴포넌트별 CSS (교체 가능 단위)
+  diagram/     # 전문가 모드: 순서도·시퀀스·상태머신 (자동 레이아웃 + SVG 내보내기)
   demo/        # 쇼케이스 + 테마 랩
 ```
 
@@ -222,5 +280,6 @@ src/
 
 Button · Badge · Card · Input · Textarea · Select · Field · Checkbox · Radio · Switch ·
 Alert · Tabs · Dialog · Table · Avatar · Progress · Skeleton · Separator · Kbd · Spinner · Tooltip
+**+ FlowDiagram · SequenceDiagram** (전문가 모드)
 
 전부 네이티브 요소 기반(접근성 내장), 토큰만 소비, 변형/톤/크기 파라미터화.

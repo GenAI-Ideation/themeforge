@@ -1,0 +1,141 @@
+/*
+ * 다이어그램 스타일 — UI 컴포넌트와 같은 토큰, 같은 직교성.
+ *
+ * 노드는 data-tone × data-variant 위에 있고 (tones.css 리매핑 재사용),
+ * 모서리는 radius 퍼스널리티, 선 굵기는 --border-width,
+ * active 간선의 흐름 속도는 모션 토큰(--dur-3)을 따른다.
+ * → 테마를 바꾸면 다이어그램이 다시 태어난다.
+ */
+@layer components {
+  .tf-diagram {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background: var(--bg-surface);
+    border: var(--border-width) solid var(--surface-border-color);
+    border-radius: var(--radius-surface);
+    font-family: var(--font-body);
+  }
+
+  /* ---- 순서도 노드 ---- */
+  .tf-flow-node .tf-node-shape {
+    fill: var(--tone-3);
+    stroke: var(--tone-7);
+    stroke-width: var(--border-width);
+  }
+  .tf-flow-node[data-variant='solid'] .tf-node-shape {
+    fill: var(--tone-9);
+    stroke: var(--tone-10);
+  }
+  .tf-flow-node[data-variant='outline'] .tf-node-shape {
+    fill: var(--bg-surface);
+    stroke: var(--tone-8);
+  }
+  .tf-flow-node text {
+    fill: var(--tone-12);
+    font-size: 13px;
+    font-weight: 500;
+    dominant-baseline: central;
+  }
+  .tf-flow-node[data-variant='solid'] text {
+    fill: var(--tone-contrast);
+  }
+  .tf-node-detail {
+    fill: none;
+    stroke: var(--tone-7);
+    stroke-width: var(--border-width);
+  }
+  .tf-flow-node[data-variant='solid'] .tf-node-detail {
+    stroke: var(--tone-contrast);
+    opacity: 0.5;
+  }
+  .tf-node-dot {
+    fill: var(--gray-12);
+  }
+  .tf-node-ring {
+    fill: none;
+    stroke: var(--gray-12);
+    stroke-width: var(--border-width);
+  }
+
+  /* ---- 간선 (순서도 + 시퀀스 공용) ---- */
+  .tf-diagram .tf-edge-line {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: var(--border-width);
+    stroke-linecap: round;
+  }
+  .tf-diagram .is-toned .tf-edge-line {
+    stroke: var(--tone-9);
+  }
+  .tf-diagram [data-dashed] .tf-edge-line {
+    stroke-dasharray: 5 5;
+  }
+  .tf-diagram [data-active] .tf-edge-line {
+    stroke-dasharray: 7 5;
+    animation: tf-edge-flow calc(var(--dur-3) * 2.4) linear infinite;
+  }
+  .tf-edge-label {
+    fill: var(--text-muted);
+    font-size: 12px;
+    dominant-baseline: central;
+    paint-order: stroke;
+    stroke: var(--bg-surface);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  .tf-diagram .is-toned .tf-edge-label {
+    fill: var(--tone-11);
+  }
+  .tf-arrowhead {
+    fill: var(--border-strong);
+  }
+  marker[data-tone] .tf-arrowhead {
+    fill: var(--tone-9);
+  }
+  .tf-arrowhead-open {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  marker[data-tone] .tf-arrowhead-open {
+    stroke: var(--tone-9);
+  }
+
+  /* ---- 시퀀스 ---- */
+  .tf-seq-lifeline {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .tf-seq-activation {
+    fill: var(--tone-4);
+    stroke: var(--tone-8);
+    stroke-width: 1;
+  }
+  .tf-seq-actor rect {
+    fill: var(--tone-3);
+    stroke: var(--tone-7);
+    stroke-width: var(--border-width);
+  }
+  .tf-seq-actor text {
+    fill: var(--tone-12);
+    font-size: 13px;
+    font-weight: 600;
+    dominant-baseline: central;
+  }
+
+  @keyframes tf-edge-flow {
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tf-diagram [data-active] .tf-edge-line {
+      animation: none;
+    }
+  }
+}

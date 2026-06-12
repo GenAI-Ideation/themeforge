@@ -3,6 +3,7 @@ import type { Mode } from '../core'
 import { buildTheme, emitAllThemesCss, emitThemeCss } from '../core'
 import { PRESETS } from '../themes/presets'
 import { Badge, Button } from '../ui'
+import { DiagramsSection } from './Diagrams'
 import { Gallery } from './Gallery'
 import { MultiThemeStrip } from './MultiTheme'
 import { DEFAULT_LAB, labToConfig, ThemeLab } from './ThemeLab'
@@ -142,6 +143,8 @@ export default function App() {
         </section>
 
         <Gallery theme={activeTheme} mode={mode} />
+
+        <DiagramsSection />
       </main>
 
       <footer className="app-footer">
