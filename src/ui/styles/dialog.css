@@ -1,0 +1,63 @@
+@layer components {
+  .tf-dialog {
+    border: var(--border-width) solid var(--surface-border-color);
+    border-radius: var(--radius-surface);
+    background: var(--bg-surface);
+    color: var(--text);
+    box-shadow: var(--shadow-5);
+    padding: 0;
+    width: min(420px, calc(100vw - 32px));
+    max-height: calc(100dvh - 64px);
+    margin: auto;
+  }
+
+  .tf-dialog::backdrop {
+    background: var(--bg-overlay);
+    backdrop-filter: blur(3px);
+  }
+
+  .tf-dialog[open] {
+    animation: tf-dialog-in var(--dur-2) var(--ease-spring);
+  }
+  .tf-dialog[open]::backdrop {
+    animation: tf-fade-in var(--dur-2) var(--ease-out);
+  }
+
+  @keyframes tf-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.97);
+    }
+  }
+  @keyframes tf-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .tf-dialog__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+  }
+
+  .tf-dialog__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 650;
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .tf-dialog__desc {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .tf-dialog__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+}

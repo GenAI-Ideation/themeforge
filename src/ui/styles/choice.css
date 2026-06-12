@@ -1,0 +1,105 @@
+/* Checkbox · Radio · Switch — 전부 네이티브 input 위에 그린다(접근성 공짜) */
+@layer components {
+  .tf-check-row {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    user-select: none;
+    font-size: var(--text-sm);
+  }
+  .tf-check-row:has(input:disabled) {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .tf-checkbox,
+  .tf-radio {
+    appearance: none;
+    flex-shrink: 0;
+    width: calc(var(--space-unit) * 4.5);
+    height: calc(var(--space-unit) * 4.5);
+    margin: 0;
+    display: grid;
+    place-content: center;
+    background: var(--bg-surface);
+    border: var(--border-width) solid var(--border-strong);
+    cursor: pointer;
+    transition:
+      background-color var(--dur-1) var(--ease-out),
+      border-color var(--dur-1) var(--ease-out);
+  }
+
+  .tf-checkbox {
+    border-radius: max(2px, calc(var(--radius-1) * 0.8));
+  }
+  .tf-radio {
+    border-radius: var(--radius-full);
+  }
+
+  .tf-checkbox:checked,
+  .tf-radio:checked {
+    background: var(--tone-9);
+    border-color: var(--tone-9);
+  }
+
+  .tf-checkbox::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--tone-contrast);
+    clip-path: polygon(13% 47%, 0 64%, 38% 100%, 100% 17%, 84% 2%, 36% 70%);
+    transform: scale(0);
+    transition: transform var(--dur-1) var(--ease-spring);
+  }
+  .tf-checkbox:checked::after {
+    transform: scale(1);
+  }
+
+  .tf-radio::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--tone-contrast);
+    transform: scale(0);
+    transition: transform var(--dur-1) var(--ease-spring);
+  }
+  .tf-radio:checked::after {
+    transform: scale(1);
+  }
+
+  /* ----- Switch ----- */
+  .tf-switch {
+    appearance: none;
+    flex-shrink: 0;
+    position: relative;
+    width: calc(var(--space-unit) * 10);
+    height: calc(var(--space-unit) * 5.75);
+    margin: 0;
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--gray-6);
+    cursor: pointer;
+    transition: background-color var(--dur-2) var(--ease-out);
+  }
+  .tf-switch::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    width: calc(var(--space-unit) * 4.25);
+    height: calc(var(--space-unit) * 4.25);
+    border-radius: var(--radius-full);
+    background: white;
+    box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
+    transform: translateY(-50%);
+    transition: left var(--dur-2) var(--ease-spring);
+  }
+  .tf-switch:checked {
+    background: var(--tone-9);
+  }
+  .tf-switch:checked::after {
+    left: calc(100% - var(--space-unit) * 4.25 - 3px);
+  }
+}

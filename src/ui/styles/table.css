@@ -1,0 +1,43 @@
+@layer components {
+  .tf-table-wrap {
+    background: var(--bg-surface);
+    border: var(--border-width) solid var(--surface-border-color);
+    border-radius: var(--radius-surface);
+    box-shadow: var(--surface-shadow);
+    overflow: auto;
+  }
+
+  .tf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  .tf-table th {
+    text-align: left;
+    font-size: var(--text-xs);
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .tf-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tf-table tbody tr {
+    transition: background-color var(--dur-1) var(--ease-out);
+  }
+  .tf-table tbody tr:hover {
+    background: var(--gray-2);
+  }
+  .tf-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+}

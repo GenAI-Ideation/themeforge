@@ -1,0 +1,64 @@
+@layer components {
+  .tf-tablist {
+    display: flex;
+    align-items: center;
+  }
+
+  .tf-tab {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: 550;
+    color: var(--text-muted);
+    transition:
+      color var(--dur-1) var(--ease-out),
+      background-color var(--dur-1) var(--ease-out);
+  }
+  .tf-tab:hover {
+    color: var(--text);
+  }
+  .tf-tab[aria-selected='true'] {
+    color: var(--text);
+  }
+
+  /* 라인 변형 — 밑줄 인디케이터 */
+  .tf-tablist[data-variant='line'] {
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .tf-tablist[data-variant='line'] .tf-tab {
+    position: relative;
+    padding: var(--space-2) var(--space-3);
+  }
+  .tf-tablist[data-variant='line'] .tf-tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset-inline: var(--space-2);
+    bottom: -1px;
+    height: 2px;
+    border-radius: var(--radius-full);
+    background: var(--tone-9);
+  }
+
+  /* 필 변형 — 세그먼트 컨트롤 */
+  .tf-tablist[data-variant='pills'] {
+    gap: var(--space-1);
+    padding: var(--space-1);
+    background: var(--gray-3);
+    border-radius: var(--radius-control);
+    width: fit-content;
+  }
+  .tf-tablist[data-variant='pills'] .tf-tab {
+    padding: calc(var(--space-unit) * 1.5) var(--space-3);
+    border-radius: max(calc(var(--radius-control) - var(--space-1)), 2px);
+  }
+  .tf-tablist[data-variant='pills'] .tf-tab[aria-selected='true'] {
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-1);
+  }
+
+  .tf-tabpanel {
+    padding-top: var(--space-4);
+  }
+}

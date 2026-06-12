@@ -1,0 +1,82 @@
+/*
+ * 톤 리매핑 — 이 파일이 "톤 × 변형" 직교성의 비밀이다.
+ *
+ * data-tone 은 스케일(brand-*, danger-* ...)을 추상 역할 변수(--tone-*)로
+ * 바꿔치기하고, 변형(solid/soft/outline/ghost)은 --tone-* 만 소비한다.
+ *   - 새 변형 추가 = CSS 한 블록 (모든 톤에서 즉시 동작)
+ *   - 새 톤 추가   = 아래 13줄 블록 하나 (모든 변형에서 즉시 동작)
+ *
+ * CSS 변수는 상속되므로 컨테이너에 data-tone 을 걸면
+ * 서브트리 전체의 기본 톤이 바뀐다.
+ */
+@layer tones {
+  [data-tone='neutral'] {
+    --tone-1: var(--gray-1);   --tone-2: var(--gray-2);
+    --tone-3: var(--gray-3);   --tone-4: var(--gray-4);
+    --tone-5: var(--gray-5);   --tone-6: var(--gray-6);
+    --tone-7: var(--gray-7);   --tone-8: var(--gray-8);
+    --tone-9: var(--gray-9);   --tone-10: var(--gray-10);
+    --tone-11: var(--gray-11); --tone-12: var(--gray-12);
+    --tone-contrast: var(--gray-contrast);
+  }
+
+  [data-tone='brand'] {
+    --tone-1: var(--brand-1);   --tone-2: var(--brand-2);
+    --tone-3: var(--brand-3);   --tone-4: var(--brand-4);
+    --tone-5: var(--brand-5);   --tone-6: var(--brand-6);
+    --tone-7: var(--brand-7);   --tone-8: var(--brand-8);
+    --tone-9: var(--brand-9);   --tone-10: var(--brand-10);
+    --tone-11: var(--brand-11); --tone-12: var(--brand-12);
+    --tone-contrast: var(--brand-contrast);
+  }
+
+  [data-tone='accent'] {
+    --tone-1: var(--accent-1);   --tone-2: var(--accent-2);
+    --tone-3: var(--accent-3);   --tone-4: var(--accent-4);
+    --tone-5: var(--accent-5);   --tone-6: var(--accent-6);
+    --tone-7: var(--accent-7);   --tone-8: var(--accent-8);
+    --tone-9: var(--accent-9);   --tone-10: var(--accent-10);
+    --tone-11: var(--accent-11); --tone-12: var(--accent-12);
+    --tone-contrast: var(--accent-contrast);
+  }
+
+  [data-tone='success'] {
+    --tone-1: var(--success-1);   --tone-2: var(--success-2);
+    --tone-3: var(--success-3);   --tone-4: var(--success-4);
+    --tone-5: var(--success-5);   --tone-6: var(--success-6);
+    --tone-7: var(--success-7);   --tone-8: var(--success-8);
+    --tone-9: var(--success-9);   --tone-10: var(--success-10);
+    --tone-11: var(--success-11); --tone-12: var(--success-12);
+    --tone-contrast: var(--success-contrast);
+  }
+
+  [data-tone='warning'] {
+    --tone-1: var(--warning-1);   --tone-2: var(--warning-2);
+    --tone-3: var(--warning-3);   --tone-4: var(--warning-4);
+    --tone-5: var(--warning-5);   --tone-6: var(--warning-6);
+    --tone-7: var(--warning-7);   --tone-8: var(--warning-8);
+    --tone-9: var(--warning-9);   --tone-10: var(--warning-10);
+    --tone-11: var(--warning-11); --tone-12: var(--warning-12);
+    --tone-contrast: var(--warning-contrast);
+  }
+
+  [data-tone='danger'] {
+    --tone-1: var(--danger-1);   --tone-2: var(--danger-2);
+    --tone-3: var(--danger-3);   --tone-4: var(--danger-4);
+    --tone-5: var(--danger-5);   --tone-6: var(--danger-6);
+    --tone-7: var(--danger-7);   --tone-8: var(--danger-8);
+    --tone-9: var(--danger-9);   --tone-10: var(--danger-10);
+    --tone-11: var(--danger-11); --tone-12: var(--danger-12);
+    --tone-contrast: var(--danger-contrast);
+  }
+
+  [data-tone='info'] {
+    --tone-1: var(--info-1);   --tone-2: var(--info-2);
+    --tone-3: var(--info-3);   --tone-4: var(--info-4);
+    --tone-5: var(--info-5);   --tone-6: var(--info-6);
+    --tone-7: var(--info-7);   --tone-8: var(--info-8);
+    --tone-9: var(--info-9);   --tone-10: var(--info-10);
+    --tone-11: var(--info-11); --tone-12: var(--info-12);
+    --tone-contrast: var(--info-contrast);
+  }
+}

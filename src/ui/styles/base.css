@@ -1,0 +1,87 @@
+/*
+ * 레이어 선언 — 이 순서가 오버라이드 우선순위를 결정한다.
+ * 사용자는 @layer overrides 에만 쓰면 컴포넌트 스타일을 무조건 이긴다.
+ * (specificity 전쟁 없이 재정의 가능하게 하는 핵심 장치)
+ */
+@layer tokens, base, tones, components, overrides;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg-app);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color var(--dur-2) var(--ease-out),
+      color var(--dur-2) var(--ease-out);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 650;
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--link);
+    text-underline-offset: 0.2em;
+  }
+
+  img, svg, video {
+    display: block;
+    max-width: 100%;
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+  }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--text);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

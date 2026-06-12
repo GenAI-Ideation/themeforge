@@ -1,0 +1,40 @@
+@layer components {
+  .tf-alert {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-2);
+    border: var(--border-width) solid transparent;
+    font-size: var(--text-sm);
+  }
+
+  .tf-alert[data-variant='soft'] {
+    background: var(--tone-2);
+    border-color: var(--tone-6);
+    color: var(--tone-11);
+  }
+  .tf-alert[data-variant='solid'] {
+    background: var(--tone-9);
+    color: var(--tone-contrast);
+  }
+  .tf-alert[data-variant='outline'] {
+    border-color: var(--tone-7);
+    color: var(--tone-11);
+  }
+
+  .tf-alert__icon {
+    flex-shrink: 0;
+    display: grid;
+    place-content: center;
+    width: 20px;
+    height: 20px;
+  }
+
+  .tf-alert__title {
+    font-weight: 650;
+    margin-bottom: 2px;
+  }
+  .tf-alert[data-variant='soft'] .tf-alert__title {
+    color: var(--tone-12);
+  }
+}

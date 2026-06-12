@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko" data-theme="aurora">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ThemeForge — 디자인 시스템 팩토리</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Space+Grotesk:wght@400..700&family=Fraunces:opsz,wght@9..144,400..700&family=Playfair+Display:wght@500..700&family=Nunito:wght@400..800&family=JetBrains+Mono:wght@400..600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <style>
+      /* 테마 CSS 로드 전 플래시 방지 */
+      html { background: #fdfdfd; }
+      html[data-mode='dark'] { background: #141414; }
+    </style>
+    <script>
+      // 다크모드 깜빡임 방지: 첫 페인트 전에 모드 결정
+      try {
+        const saved = localStorage.getItem('tf-mode')
+        const mode =
+          saved ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        document.documentElement.dataset.mode = mode
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
