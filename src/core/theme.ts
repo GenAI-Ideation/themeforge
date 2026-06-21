@@ -44,6 +44,18 @@ export interface ThemeFonts {
   mono?: string
 }
 
+export interface ResponsiveConfig {
+  /**
+   * 유체 타입 스케일. 켜면 --text-* 가 clamp()로 방출되어 뷰포트에 따라
+   * 매끄럽게 변한다(모바일에서 헤드라인 축소, 본문 가독성 유지). 기본 true.
+   */
+  fluidType?: boolean
+  /**
+   * 거친 포인터(터치)에서 컨트롤 최소 높이를 44px로 보장. 기본 true.
+   */
+  tapTargets?: boolean
+}
+
 export interface ThemeConfig {
   /** CSS 스코프에 쓰이는 식별자 (kebab-case) */
   name: string
@@ -55,6 +67,8 @@ export interface ThemeConfig {
   /** 프리셋 위에 얹는 개별 오버라이드 */
   personality?: Partial<Personality>
   fonts?: ThemeFonts
+  /** 반응형 동작. 생략 시 전부 켜진 기본값 */
+  responsive?: ResponsiveConfig
 }
 
 export interface ModePalette {

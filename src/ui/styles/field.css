@@ -44,15 +44,29 @@
     background: var(--bg-surface);
     border-color: var(--border);
   }
-  .tf-input[data-variant='outline']:hover:not(:focus):not(:disabled) {
-    border-color: var(--border-strong);
-  }
 
   .tf-input[data-variant='soft'] {
     background: var(--gray-3);
   }
-  .tf-input[data-variant='soft']:hover:not(:focus):not(:disabled) {
-    background: var(--gray-4);
+
+  @media (hover: hover) {
+    .tf-input[data-variant='outline']:hover:not(:focus):not(:disabled) {
+      border-color: var(--border-strong);
+    }
+    .tf-input[data-variant='soft']:hover:not(:focus):not(:disabled) {
+      background: var(--gray-4);
+    }
+  }
+
+  /*
+   * iOS는 폰트가 16px 미만인 입력에 포커스하면 화면을 강제 확대한다.
+   * 거친 포인터에서 입력 폰트를 최소 16px로 올려 그 줌을 막는다.
+   * (정밀 포인터에서는 디자이너가 정한 밀도/타입을 그대로 둔다)
+   */
+  @media (pointer: coarse) {
+    .tf-input {
+      font-size: max(16px, var(--control-fs-md));
+    }
   }
 
   .tf-input:focus {

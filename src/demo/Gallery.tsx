@@ -420,7 +420,7 @@ function DataSection() {
           <Tab value="settings">설정</Tab>
         </TabList>
         <TabPanel value="members">
-          <Table>
+          <Table stackOnMobile>
             <THead>
               <tr>
                 <th>이름</th>
@@ -432,19 +432,21 @@ function DataSection() {
             <TBody>
               {MEMBERS.map((m) => (
                 <tr key={m.name}>
-                  <td>
+                  <td data-label="이름">
                     <span className="row" style={{ flexWrap: 'nowrap' }}>
                       <Avatar name={m.name} size="sm" tone={STATUS_TONE[m.status]} />
                       <strong>{m.name}</strong>
                     </span>
                   </td>
-                  <td style={{ color: 'var(--text-muted)' }}>{m.role}</td>
-                  <td>
+                  <td data-label="역할" style={{ color: 'var(--text-muted)' }}>
+                    {m.role}
+                  </td>
+                  <td data-label="상태">
                     <Badge tone={STATUS_TONE[m.status]} dot>
                       {STATUS_LABEL[m.status]}
                     </Badge>
                   </td>
-                  <td>
+                  <td data-label="시트 사용률">
                     <Progress value={m.usage} tone={m.usage > 85 ? 'warning' : 'brand'} />
                   </td>
                 </tr>

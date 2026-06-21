@@ -33,9 +33,22 @@ export function resolveFont(value: string | undefined, fallback: FontStackName):
   return value in FONT_STACKS ? FONT_STACKS[value as FontStackName] : value
 }
 
+export type TypeSizeKey = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
+
+export const TYPE_STEPS: Record<TypeSizeKey, number> = {
+  xs: -2,
+  sm: -1,
+  md: 0,
+  lg: 1,
+  xl: 2,
+  '2xl': 3,
+  '3xl': 4.5,
+  '4xl': 6,
+}
+
 export interface TypeScale {
   /** px 값. xs..4xl */
-  sizes: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl', number>
+  sizes: Record<TypeSizeKey, number>
   leadingBody: number
   leadingHeading: number
   trackingHeading: string
@@ -47,22 +60,29 @@ export interface TypeScale {
  * 디스플레이 사이즈(3xl+)는 지수를 더 크게 점프시켜 위계를 분명히 한다.
  */
 export function buildTypeScale(ratio: number, base = 16): TypeScale {
-  const step = (n: number) => Math.round(base * Math.pow(ratio, n) * 2) / 2
+  const sizes = {} as Record<TypeSizeKey, number>
+  for (const [key, n] of Object.entries(TYPE_STEPS) as [TypeSizeKey, number][]) {
+    sizes[key] = Math.round(base * Math.pow(ratio, n) * 2) / 2
+  }
   return {
-    sizes: {
-      xs: step(-2),
-      sm: step(-1),
-      md: base,
-      lg: step(1),
-      xl: step(2),
-      '2xl': step(3),
-      '3xl': step(4.5),
-      '4xl': step(6),
-    },
+    sizes,
     leadingBody: 1.6,
     leadingHeading: ratio >= 1.3 ? 1.08 : 1.2,
     // 큰 비율(드라마틱 디스플레이 타입)일수록 자간을 더 조인다
     trackingHeading: ratio >= 1.3 ? '-0.022em' : '-0.012em',
     trackingCaps: '0.07em',
   }
+}
+
+/**
+ * 모바일 타입 스케일 — 데스크톱 스케일을 그대로 줄이지 않는다.
+ *
+ * 핵심은 "위계 압축": 작은 화면에서는 위계 공비를 1쪽으로 당겨
+ *   - 본문/작은 텍스트는 **오히려 약간 커지고**(폰 가독성↑, iOS 줌 방지)
+ *   - 헤드라인/디스플레이는 **크게 줄어든다**(화면을 잡아먹지 않게)
+ * base는 16px로 유지해 본문이 16px 밑으로 내려가지 않게 한다.
+ */
+export function buildMobileTypeScale(ratio: number, base = 16): TypeScale {
+  const mobileRatio = 1 + (ratio - 1) * 0.6
+  return buildTypeScale(mobileRatio, base)
 }

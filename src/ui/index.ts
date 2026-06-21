@@ -9,6 +9,7 @@
 
 import './styles/base.css'
 import './styles/tones.css'
+import './styles/layout.css'
 import './styles/button.css'
 import './styles/badge.css'
 import './styles/card.css'
@@ -21,6 +22,7 @@ import './styles/table.css'
 import './styles/misc.css'
 
 export * from './shared'
+export * from './Layout'
 export * from './Button'
 export * from './Badge'
 export * from './Card'

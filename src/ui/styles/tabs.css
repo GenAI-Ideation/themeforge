@@ -2,9 +2,20 @@
   .tf-tablist {
     display: flex;
     align-items: center;
+    /* 좁은 화면에서 탭이 넘치면 가로 스크롤(줄바꿈 X) — 스크롤바는 숨김 */
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .tf-tablist::-webkit-scrollbar {
+    display: none;
   }
 
   .tf-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    scroll-snap-align: start;
     border: none;
     background: none;
     cursor: pointer;
@@ -15,8 +26,10 @@
       color var(--dur-1) var(--ease-out),
       background-color var(--dur-1) var(--ease-out);
   }
-  .tf-tab:hover {
-    color: var(--text);
+  @media (hover: hover) {
+    .tf-tab:hover {
+      color: var(--text);
+    }
   }
   .tf-tab[aria-selected='true'] {
     color: var(--text);

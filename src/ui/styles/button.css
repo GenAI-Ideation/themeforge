@@ -64,16 +64,10 @@
     color: var(--tone-contrast);
     box-shadow: var(--shadow-1);
   }
-  .tf-btn[data-variant='solid']:hover:not(:disabled) {
-    background: var(--tone-10);
-  }
 
   .tf-btn[data-variant='soft'] {
     background: var(--tone-3);
     color: var(--tone-11);
-  }
-  .tf-btn[data-variant='soft']:hover:not(:disabled) {
-    background: var(--tone-4);
   }
   .tf-btn[data-variant='soft']:active:not(:disabled) {
     background: var(--tone-5);
@@ -83,9 +77,6 @@
     border-color: var(--tone-8);
     color: var(--tone-11);
   }
-  .tf-btn[data-variant='outline']:hover:not(:disabled) {
-    background: var(--tone-2);
-  }
   .tf-btn[data-variant='outline']:active:not(:disabled) {
     background: var(--tone-3);
   }
@@ -93,11 +84,24 @@
   .tf-btn[data-variant='ghost'] {
     color: var(--tone-11);
   }
-  .tf-btn[data-variant='ghost']:hover:not(:disabled) {
-    background: var(--tone-3);
-  }
   .tf-btn[data-variant='ghost']:active:not(:disabled) {
     background: var(--tone-4);
+  }
+
+  /* hover 효과는 정밀 포인터에서만 — 터치에서 sticky hover 방지 */
+  @media (hover: hover) {
+    .tf-btn[data-variant='solid']:hover:not(:disabled) {
+      background: var(--tone-10);
+    }
+    .tf-btn[data-variant='soft']:hover:not(:disabled) {
+      background: var(--tone-4);
+    }
+    .tf-btn[data-variant='outline']:hover:not(:disabled) {
+      background: var(--tone-2);
+    }
+    .tf-btn[data-variant='ghost']:hover:not(:disabled) {
+      background: var(--tone-3);
+    }
   }
 
   .tf-btn[data-loading] {

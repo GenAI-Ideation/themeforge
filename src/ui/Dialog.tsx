@@ -6,13 +6,25 @@ export interface DialogProps extends Omit<DialogHTMLAttributes<HTMLDialogElement
   open: boolean
   onClose: () => void
   children: ReactNode
+  /**
+   * 배치 — center(중앙 모달) · sheet(하단 바텀시트) · auto(기본: 모바일에선
+   * 바텀시트, 데스크톱에선 중앙 모달). 모바일 정석 패턴을 공짜로 얻는다.
+   */
+  placement?: 'center' | 'sheet' | 'auto'
 }
 
 /**
  * 네이티브 <dialog> 기반 모달 — 포커스 트랩과 ESC 닫기는 브라우저가 처리한다.
- * 백드롭 클릭 닫기만 직접 구현.
+ * 백드롭 클릭 닫기만 직접 구현. placement='auto'면 좁은 화면에서 바텀시트로 변신.
  */
-export function Dialog({ open, onClose, className, children, ...rest }: DialogProps) {
+export function Dialog({
+  open,
+  onClose,
+  className,
+  children,
+  placement = 'auto',
+  ...rest
+}: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -33,6 +45,7 @@ export function Dialog({ open, onClose, className, children, ...rest }: DialogPr
     <dialog
       ref={ref}
       className={cx('tf-dialog', className)}
+      data-placement={placement}
       onClose={onClose}
       onClick={onClick}
       {...rest}

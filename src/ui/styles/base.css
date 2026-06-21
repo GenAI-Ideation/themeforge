@@ -18,6 +18,23 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    /* 모바일 가로 스크롤 사고 방지 — 컴포넌트가 뷰포트를 넘기지 않게 */
+    overflow-x: hidden;
+  }
+
+  /*
+   * 탭 타깃 바닥값 스위치.
+   * 토큰은 컨트롤 높이를 max(<계산값>, var(--tap-min))로 방출한다.
+   * 거친 포인터(터치)에서만 바닥을 44px로 올려 손가락 접근성을 보장하고,
+   * 정밀 포인터(마우스)에서는 0 → 디자이너가 의도한 밀도를 그대로 둔다.
+   */
+  :where([data-theme]) {
+    --tap-min: 0px;
+  }
+  @media (pointer: coarse) {
+    :where([data-theme]) {
+      --tap-min: 44px;
+    }
   }
 
   body {

@@ -1,0 +1,129 @@
+/*
+ * 반응형 레이아웃 프리미티브 CSS.
+ *
+ * 컴포넌트가 인라인으로 박은 `--<name>-<bp>` 커스텀 프로퍼티를 미디어 쿼리가
+ * 소비한다. 각 브레이크포인트는 var() 폴백 체인으로 더 작은 브레이크포인트의
+ * 값을 물려받으므로(모바일 우선), 지정하지 않은 단계는 자동으로 채워진다.
+ *
+ * 브레이크포인트: sm 640 · md 768 · lg 1024 · xl 1280 (core/responsive.ts와 동일)
+ */
+@layer components {
+  /* ---------- Container ---------- */
+  .tf-container {
+    width: 100%;
+    margin-inline: auto;
+    --tf-gutter: clamp(16px, 4vw, 32px);
+  }
+  .tf-container[data-gutter] {
+    padding-left: max(env(safe-area-inset-left, 0px), var(--tf-gutter));
+    padding-right: max(env(safe-area-inset-right, 0px), var(--tf-gutter));
+  }
+  .tf-container[data-size='sm'] { max-width: 640px; }
+  .tf-container[data-size='md'] { max-width: 768px; }
+  .tf-container[data-size='lg'] { max-width: 1024px; }
+  .tf-container[data-size='xl'] { max-width: 1200px; }
+  .tf-container[data-size='full'] { max-width: none; }
+
+  /* ---------- Stack ---------- */
+  .tf-stack {
+    display: flex;
+    flex-direction: var(--stk-dir-base, column);
+    gap: var(--stk-gap-base, var(--space-4));
+    align-items: var(--stk-align-base, stretch);
+    justify-content: var(--stk-justify-base, flex-start);
+    min-width: 0;
+  }
+  .tf-stack[data-wrap] { flex-wrap: wrap; }
+
+  /* ---------- Grid ---------- */
+  .tf-grid {
+    display: grid;
+    gap: var(--grd-gap-base, var(--space-4));
+    align-items: var(--grd-align-base, stretch);
+    grid-template-columns: var(--grd-cols-base, repeat(1, minmax(0, 1fr)));
+    min-width: 0;
+  }
+  /* 자동 모드: 컨테이너 폭에 맞춰 본질적으로 반응형(미디어 쿼리 불필요) */
+  .tf-grid[data-auto] {
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grd-min, 240px), 100%), 1fr));
+  }
+
+  /* ---------- Cluster ---------- */
+  .tf-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--clu-gap-base, var(--space-3));
+    align-items: var(--clu-align-base, center);
+    justify-content: var(--clu-justify-base, flex-start);
+    min-width: 0;
+  }
+
+  /* ---------- 브레이크포인트 폴백 체인 (모바일 우선) ---------- */
+  @media (min-width: 640px) {
+    .tf-stack {
+      flex-direction: var(--stk-dir-sm, var(--stk-dir-base, column));
+      gap: var(--stk-gap-sm, var(--stk-gap-base, var(--space-4)));
+      align-items: var(--stk-align-sm, var(--stk-align-base, stretch));
+      justify-content: var(--stk-justify-sm, var(--stk-justify-base, flex-start));
+    }
+    .tf-grid {
+      gap: var(--grd-gap-sm, var(--grd-gap-base, var(--space-4)));
+      align-items: var(--grd-align-sm, var(--grd-align-base, stretch));
+    }
+    .tf-grid:not([data-auto]) {
+      grid-template-columns: var(--grd-cols-sm, var(--grd-cols-base, repeat(1, minmax(0, 1fr))));
+    }
+    .tf-cluster {
+      gap: var(--clu-gap-sm, var(--clu-gap-base, var(--space-3)));
+      align-items: var(--clu-align-sm, var(--clu-align-base, center));
+      justify-content: var(--clu-justify-sm, var(--clu-justify-base, flex-start));
+    }
+  }
+  @media (min-width: 768px) {
+    .tf-stack {
+      flex-direction: var(--stk-dir-md, var(--stk-dir-sm, var(--stk-dir-base, column)));
+      gap: var(--stk-gap-md, var(--stk-gap-sm, var(--stk-gap-base, var(--space-4))));
+      align-items: var(--stk-align-md, var(--stk-align-sm, var(--stk-align-base, stretch)));
+      justify-content: var(--stk-justify-md, var(--stk-justify-sm, var(--stk-justify-base, flex-start)));
+    }
+    .tf-grid {
+      gap: var(--grd-gap-md, var(--grd-gap-sm, var(--grd-gap-base, var(--space-4))));
+      align-items: var(--grd-align-md, var(--grd-align-sm, var(--grd-align-base, stretch)));
+    }
+    .tf-grid:not([data-auto]) {
+      grid-template-columns: var(--grd-cols-md, var(--grd-cols-sm, var(--grd-cols-base, repeat(1, minmax(0, 1fr)))));
+    }
+    .tf-cluster {
+      gap: var(--clu-gap-md, var(--clu-gap-sm, var(--clu-gap-base, var(--space-3))));
+      align-items: var(--clu-align-md, var(--clu-align-sm, var(--clu-align-base, center)));
+      justify-content: var(--clu-justify-md, var(--clu-justify-sm, var(--clu-justify-base, flex-start)));
+    }
+  }
+  @media (min-width: 1024px) {
+    .tf-stack {
+      flex-direction: var(--stk-dir-lg, var(--stk-dir-md, var(--stk-dir-sm, var(--stk-dir-base, column))));
+      gap: var(--stk-gap-lg, var(--stk-gap-md, var(--stk-gap-sm, var(--stk-gap-base, var(--space-4)))));
+      align-items: var(--stk-align-lg, var(--stk-align-md, var(--stk-align-sm, var(--stk-align-base, stretch))));
+      justify-content: var(--stk-justify-lg, var(--stk-justify-md, var(--stk-justify-sm, var(--stk-justify-base, flex-start))));
+    }
+    .tf-grid {
+      gap: var(--grd-gap-lg, var(--grd-gap-md, var(--grd-gap-sm, var(--grd-gap-base, var(--space-4)))));
+      align-items: var(--grd-align-lg, var(--grd-align-md, var(--grd-align-sm, var(--grd-align-base, stretch))));
+    }
+    .tf-grid:not([data-auto]) {
+      grid-template-columns: var(--grd-cols-lg, var(--grd-cols-md, var(--grd-cols-sm, var(--grd-cols-base, repeat(1, minmax(0, 1fr))))));
+    }
+    .tf-cluster {
+      gap: var(--clu-gap-lg, var(--clu-gap-md, var(--clu-gap-sm, var(--clu-gap-base, var(--space-3)))));
+    }
+  }
+  @media (min-width: 1280px) {
+    .tf-stack {
+      flex-direction: var(--stk-dir-xl, var(--stk-dir-lg, var(--stk-dir-md, var(--stk-dir-sm, var(--stk-dir-base, column)))));
+      gap: var(--stk-gap-xl, var(--stk-gap-lg, var(--stk-gap-md, var(--stk-gap-sm, var(--stk-gap-base, var(--space-4))))));
+    }
+    .tf-grid:not([data-auto]) {
+      grid-template-columns: var(--grd-cols-xl, var(--grd-cols-lg, var(--grd-cols-md, var(--grd-cols-sm, var(--grd-cols-base, repeat(1, minmax(0, 1fr)))))));
+    }
+  }
+}

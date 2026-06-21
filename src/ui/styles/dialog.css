@@ -9,6 +9,7 @@
     width: min(420px, calc(100vw - 32px));
     max-height: calc(100dvh - 64px);
     margin: auto;
+    overflow: auto;
   }
 
   .tf-dialog::backdrop {
@@ -29,9 +30,66 @@
       transform: translateY(10px) scale(0.97);
     }
   }
+  @keyframes tf-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
   @keyframes tf-fade-in {
     from {
       opacity: 0;
+    }
+  }
+
+  /*
+   * 바텀시트 — placement='sheet' 항상, placement='auto'는 좁은 화면(≤640px)에서.
+   * 화면 하단에 붙고, 풀폭, 위쪽만 둥글게, 아래에서 위로 슬라이드.
+   * safe-area-inset-bottom 으로 노치/홈바를 피한다.
+   */
+  .tf-dialog[data-placement='sheet'],
+  .tf-dialog[data-placement='auto'] {
+    /* 모바일 기본은 아래 미디어쿼리가 결정 — 여기선 sheet 명시값만 */
+  }
+  @media (max-width: 639.98px) {
+    .tf-dialog[data-placement='auto'],
+    .tf-dialog[data-placement='sheet'] {
+      width: 100vw;
+      max-width: none;
+      max-height: 88dvh;
+      margin: auto auto 0;
+      border-radius: var(--radius-surface) var(--radius-surface) 0 0;
+      border-bottom: none;
+    }
+    .tf-dialog[data-placement='auto'][open],
+    .tf-dialog[data-placement='sheet'][open] {
+      animation: tf-sheet-in var(--dur-2) var(--ease-out);
+    }
+    .tf-dialog[data-placement='auto'] .tf-dialog__inner,
+    .tf-dialog[data-placement='sheet'] .tf-dialog__inner {
+      padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+    }
+    /* 시트 상단 그랩 핸들 */
+    .tf-dialog[data-placement='auto'] .tf-dialog__inner::before,
+    .tf-dialog[data-placement='sheet'] .tf-dialog__inner::before {
+      content: '';
+      width: 36px;
+      height: 4px;
+      border-radius: var(--radius-full);
+      background: var(--gray-7);
+      align-self: center;
+      margin-bottom: var(--space-2);
+    }
+  }
+  /* placement='sheet'는 큰 화면에서도 바텀시트 유지 */
+  @media (min-width: 640px) {
+    .tf-dialog[data-placement='sheet'] {
+      width: min(480px, 100vw);
+      max-height: 90dvh;
+      margin: auto auto 0;
+      border-radius: var(--radius-surface) var(--radius-surface) 0 0;
+    }
+    .tf-dialog[data-placement='sheet'][open] {
+      animation: tf-sheet-in var(--dur-2) var(--ease-out);
     }
   }
 

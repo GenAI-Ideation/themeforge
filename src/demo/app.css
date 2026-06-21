@@ -8,7 +8,8 @@
   align-items: center;
   gap: var(--space-4);
   height: 60px;
-  padding-inline: var(--space-6);
+  padding-inline: max(env(safe-area-inset-left, 0px), var(--space-6))
+    max(env(safe-area-inset-right, 0px), var(--space-6));
   background: color-mix(in oklab, var(--bg-app) 82%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -33,14 +34,21 @@
 .theme-switcher {
   display: flex;
   gap: var(--space-1);
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
+}
+.theme-switcher::-webkit-scrollbar {
+  display: none;
 }
 
 .app-main {
   max-width: 1100px;
   margin-inline: auto;
-  padding: var(--space-9) var(--space-6) calc(var(--space-12) * 2);
+  padding: var(--space-9)
+    max(env(safe-area-inset-left, 0px), var(--space-6))
+    calc(var(--space-12) * 2)
+    max(env(safe-area-inset-right, 0px), var(--space-6));
   display: flex;
   flex-direction: column;
   gap: calc(var(--space-unit) * 18);
@@ -390,9 +398,45 @@
 @media (max-width: 720px) {
   .app-header {
     gap: var(--space-2);
-    padding-inline: var(--space-3);
+    padding-inline: max(env(safe-area-inset-left, 0px), var(--space-3))
+      max(env(safe-area-inset-right, 0px), var(--space-3));
   }
   .matrix {
     grid-template-columns: 56px repeat(7, auto);
+  }
+}
+
+@media (max-width: 640px) {
+  /* 테마 랩: 모바일에서 풀폭 드로어 + 하단 safe-area */
+  .lab {
+    width: 100vw;
+    left: 0;
+    padding-bottom: calc(var(--space-9) + env(safe-area-inset-bottom, 0px));
+    box-shadow: var(--shadow-5);
+  }
+  .lab-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* 색 스와치: 라벨 폭 축소 + 행 가로 스크롤 방지를 위해 라벨 위로 */
+  .swatch-row,
+  .swatch-steps {
+    grid-template-columns: 52px repeat(12, 1fr);
+    gap: 2px;
+  }
+  /* 히어로 CTA 버튼들이 좁은 화면에서 꽉 차게 */
+  .hero .row {
+    width: 100%;
+  }
+  .hero .row > * {
+    flex: 1 1 auto;
+  }
+  /* 타입 샘플 메타 라벨이 줄을 잡아먹지 않게 위로 */
+  .type-sample > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  .type-meta {
+    width: auto;
   }
 }

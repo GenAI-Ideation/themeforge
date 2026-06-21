@@ -6,6 +6,7 @@ import { Badge, Button } from '../ui'
 import { DiagramsSection } from './Diagrams'
 import { Gallery } from './Gallery'
 import { MultiThemeStrip } from './MultiTheme'
+import { ResponsiveSection } from './Responsive'
 import { DEFAULT_LAB, labToConfig, ThemeLab } from './ThemeLab'
 import type { LabState } from './ThemeLab'
 
@@ -143,6 +144,8 @@ export default function App() {
         </section>
 
         <Gallery theme={activeTheme} mode={mode} />
+
+        <ResponsiveSection />
 
         <DiagramsSection />
       </main>

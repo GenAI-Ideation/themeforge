@@ -7,10 +7,17 @@
     cursor: pointer;
     user-select: none;
     font-size: var(--text-sm);
+    -webkit-tap-highlight-color: transparent;
   }
   .tf-check-row:has(input:disabled) {
     opacity: 0.55;
     cursor: not-allowed;
+  }
+  /* 터치: 라벨 행 전체를 최소 44px 높이의 탭 타깃으로 (작은 박스도 누르기 쉽게) */
+  @media (pointer: coarse) {
+    .tf-check-row {
+      min-height: var(--tap-min);
+    }
   }
 
   .tf-checkbox,

@@ -112,6 +112,13 @@ export function DiagramsSection() {
     flexWrap: 'wrap',
     marginBottom: 'var(--space-4)',
   }
+  // 라벨+셀렉트가 한 덩어리로 줄바꿈되도록 묶는다(모바일에서 라벨만 떨어지는 것 방지)
+  const pair: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--space-2)',
+    flexShrink: 0,
+  }
   const scroller: React.CSSProperties = { overflowX: 'auto', paddingBottom: 'var(--space-2)' }
 
   return (
@@ -134,26 +141,30 @@ export function DiagramsSection() {
 
         <TabPanel value="flow">
           <div style={controlRow}>
-            <Label htmlFor="dg-dir">방향</Label>
-            <Select
-              id="dg-dir"
-              value={direction}
-              onChange={(e) => setDirection(e.target.value as FlowDirection)}
-              style={{ width: 150 }}
-            >
-              <option value="down">위 → 아래</option>
-              <option value="right">왼쪽 → 오른쪽</option>
-            </Select>
-            <Label htmlFor="dg-style">간선</Label>
-            <Select
-              id="dg-style"
-              value={edgeStyle}
-              onChange={(e) => setEdgeStyle(e.target.value as EdgeStyle)}
-              style={{ width: 130 }}
-            >
-              <option value="smooth">곡선</option>
-              <option value="orthogonal">직각</option>
-            </Select>
+            <div style={pair}>
+              <Label htmlFor="dg-dir">방향</Label>
+              <Select
+                id="dg-dir"
+                value={direction}
+                onChange={(e) => setDirection(e.target.value as FlowDirection)}
+                style={{ width: 140 }}
+              >
+                <option value="down">위 → 아래</option>
+                <option value="right">왼쪽 → 오른쪽</option>
+              </Select>
+            </div>
+            <div style={pair}>
+              <Label htmlFor="dg-style">간선</Label>
+              <Select
+                id="dg-style"
+                value={edgeStyle}
+                onChange={(e) => setEdgeStyle(e.target.value as EdgeStyle)}
+                style={{ width: 120 }}
+              >
+                <option value="smooth">곡선</option>
+                <option value="orthogonal">직각</option>
+              </Select>
+            </div>
             <span style={{ flex: 1 }} />
             <Button
               size="sm"

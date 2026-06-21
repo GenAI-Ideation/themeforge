@@ -20,7 +20,8 @@ import {
   RADIUS_FACTOR,
   type Personality,
 } from './personality'
-import { buildTypeScale } from './typography'
+import { buildMobileTypeScale, buildTypeScale, TYPE_STEPS, type TypeSizeKey } from './typography'
+import { fluidClamp } from './responsive'
 
 const SPACE_STEPS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24]
 
@@ -122,6 +123,8 @@ function personalityVars(theme: BuiltTheme): string[] {
   const rf = RADIUS_FACTOR[p.radius]
   const motion = ENERGY_MOTION[p.energy]
   const type = buildTypeScale(p.typeRatio)
+  const fluidType = theme.config.responsive?.fluidType ?? true
+  const tapTargets = theme.config.responsive?.tapTargets ?? true
 
   const out: string[] = [
     `--font-heading: ${theme.fonts.heading};`,
@@ -129,8 +132,13 @@ function personalityVars(theme: BuiltTheme): string[] {
     `--font-mono: ${theme.fonts.mono};`,
   ]
 
-  for (const [key, value] of Object.entries(type.sizes)) {
-    out.push(`--text-${key}: ${px(value)};`)
+  // 유체 타입: 모바일 스케일 ↔ 데스크톱 스케일을 뷰포트로 보간한다.
+  // 본문/작은 텍스트는 모바일에서 살짝 커지고, 헤드라인은 크게 줄어든다.
+  const mobile = buildMobileTypeScale(p.typeRatio)
+  for (const key of Object.keys(TYPE_STEPS) as TypeSizeKey[]) {
+    const desktop = type.sizes[key]
+    const value = fluidType ? fluidClamp(mobile.sizes[key], desktop) : px(desktop)
+    out.push(`--text-${key}: ${value};`)
   }
   out.push(
     `--leading-body: ${type.leadingBody};`,
@@ -138,6 +146,13 @@ function personalityVars(theme: BuiltTheme): string[] {
     `--tracking-heading: ${type.trackingHeading};`,
     `--tracking-caps: ${type.trackingCaps};`,
   )
+
+  // 탭 타깃 바닥값. 거친 포인터에서 base.css가 --tap-min 을 44px로 올리면
+  // 모든 컨트롤 높이가 max()로 그 바닥을 존중한다(터치 접근성).
+  out.push(`--tap-min: 0px;`)
+  const floor = tapTargets
+    ? (v: number) => `max(${px(v)}, var(--tap-min))`
+    : (v: number) => px(v)
 
   out.push(`--space-unit: ${px(unit)};`)
   SPACE_STEPS.forEach((m, i) => out.push(`--space-${i + 1}: ${px(unit * m)};`))
@@ -153,11 +168,11 @@ function personalityVars(theme: BuiltTheme): string[] {
     `--border-width: ${px(p.borderWidth)};`,
   )
 
-  // 컨트롤(버튼/인풋) 치수 — 밀도에 비례
+  // 컨트롤(버튼/인풋) 치수 — 밀도에 비례, 높이는 탭 타깃 바닥 적용
   out.push(
-    `--control-h-sm: ${px(unit * 8)};`,
-    `--control-h-md: ${px(unit * 10)};`,
-    `--control-h-lg: ${px(unit * 12)};`,
+    `--control-h-sm: ${floor(unit * 8)};`,
+    `--control-h-md: ${floor(unit * 10)};`,
+    `--control-h-lg: ${floor(unit * 12)};`,
     `--control-px-sm: ${px(unit * 3)};`,
     `--control-px-md: ${px(unit * 4)};`,
     `--control-px-lg: ${px(unit * 5)};`,

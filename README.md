@@ -117,6 +117,72 @@ fonts                ──►    타입 스케일 + 폰트 스택
 그래서 **새 톤 추가 = 13줄짜리 블록 하나**, **새 변형 추가 = CSS 한 블록**이고,
 서로의 조합은 공짜로 생깁니다. `data-tone`을 컨테이너에 걸면 서브트리 기본 톤도 바뀝니다.
 
+---
+
+## 모바일은 "모드"가 아니라 토큰의 한 차원
+
+반응형은 별도 모드가 아니라 빌드된 테마에 처음부터 박혀 있습니다. 한 번 찍어낸
+디자인 시스템이 폰부터 와이드 모니터까지 그대로 동작합니다.
+
+### 1. 유체 타입 (자동)
+
+`--text-*`가 `clamp()`로 방출되어 뷰포트에 따라 매끄럽게 변합니다. 단순 축소가 아니라
+**위계 압축**입니다 — 작은 화면에서 본문/작은 텍스트는 오히려 약간 커지고(가독성 + iOS 줌
+방지), 헤드라인/디스플레이는 크게 줄어듭니다. zoom-safe하게 `rem + vw`로 표현해 사용자
+글꼴 크기/브라우저 줌을 존중합니다.
+
+```css
+--text-4xl: clamp(31.5px, 1.53rem + 1.83vw, 48px);  /* 폰 31.5 → 데스크톱 48 */
+--text-md:  16px;                                     /* 본문은 16px 고정(iOS 줌 차단) */
+```
+
+### 2. 터치 타깃 바닥값 (자동)
+
+거친 포인터(터치)에서 모든 컨트롤이 최소 44px(WCAG/Apple HIG/Material 공통 기준)을
+보장받습니다. compact 밀도에서 32px이던 sm 버튼이 터치에서는 44px로 자랍니다.
+
+```css
+--control-h-sm: max(32px, var(--tap-min));   /* --tap-min: 0 → 마우스, 44px → 터치 */
+```
+
+정밀 포인터(마우스)에서는 디자이너가 정한 밀도를 그대로 둡니다. `:hover`도 `@media (hover:
+hover)`로 가드해 터치에서 sticky hover가 남지 않고, 입력 폰트는 터치에서 16px로 떠
+iOS 포커스 줌을 막습니다.
+
+끄고 싶으면 테마에서:
+
+```ts
+{ name: 'my-system', seed: {...}, responsive: { fluidType: false, tapTargets: false } }
+```
+
+### 3. 반응형 레이아웃 프리미티브
+
+`{ base, sm, md, lg, xl }` 반응형 prop을 받는 4종 — 미디어 쿼리 JS 0개, SSR 안전.
+
+```tsx
+<Container size="lg">                                {/* 중앙 정렬 + 유체 거터 + safe-area */}
+  <Grid cols={{ base: 1, sm: 2, lg: 4 }} gap={4}>    {/* 1열 → 2열 → 4열 */}
+  <Grid min="240px">                                  {/* 컨테이너에 맞춰 자동 줄바꿈 */}
+  <Stack direction={{ base: 'column', md: 'row' }}>   {/* 모바일 세로 → md 가로 */}
+  <Cluster gap={2}>…</Cluster>                         {/* 줄바꿈 가로 묶음(태그·버튼) */}
+</Container>
+```
+
+원리: 컴포넌트가 `--<name>-<bp>` 커스텀 프로퍼티를 인라인으로 박고,
+[layout.css](src/ui/styles/layout.css)의 미디어 쿼리가 `var()` 폴백 체인으로
+소비합니다(모바일 우선 — 지정 안 한 단계는 더 작은 단계를 물려받음).
+
+### 4. 모바일 적응 컴포넌트
+
+- **Dialog** `placement="auto"` — 좁은 화면에선 **바텀시트**(하단 슬라이드, safe-area
+  보정, 그랩 핸들), 넓은 화면에선 중앙 모달.
+- **Table / DataTable** `stackOnMobile` — 좁은 화면에서 표가 **카드 더미**가 됩니다.
+  `DataTable`은 셀 라벨을 컬럼 헤더에서 자동으로 채웁니다.
+- **Tabs** — 넘치면 줄바꿈 대신 가로 스크롤(스크롤바 숨김 + 스냅).
+
+브레이크포인트는 `sm 640 · md 768 · lg 1024 · xl 1280`([core/responsive.ts](src/core/responsive.ts)),
+Tailwind 관례와 동일합니다.
+
 ## 전문가 모드 — 다이어그램도 토큰을 입는다
 
 개발자/설계자를 위한 SVG 다이어그램 컴포넌트: **순서도(FlowDiagram) · 시퀀스
@@ -257,6 +323,7 @@ const css = emitThemeCss(buildTheme({
 | 깊이 | `--shadow-1..5` `--surface-shadow` `--surface-border-color` | depth가 결정 |
 | 모션 | `--dur-1..3` `--ease-out` `--ease-spring` | energy가 결정 |
 | 컨트롤 | `--control-h-sm/md/lg` `--control-px-*` `--control-fs-*` | 버튼·인풋 공용 |
+| 반응형 | `--text-*`(유체 clamp) `--tap-min` | 터치에서 `--tap-min`→44px, 컨트롤 높이 바닥값 |
 
 ## 디렉터리 구조
 
@@ -266,11 +333,13 @@ src/
     color.ts        # OKLCH 수학, 색역 클램핑, WCAG 대비
     scales.ts       # 12스텝 램프 + 대비 자동 보정
     personality.ts  # 무드 프리셋, 밀도/모서리/모션 수치
-    typography.ts   # 폰트 스택 레지스트리, 모듈러 스케일
+    typography.ts   # 폰트 스택 레지스트리, 모듈러 스케일 + 모바일 스케일
+    responsive.ts   # 브레이크포인트 + 유체 clamp 수학 + 탭 타깃 상수
     theme.ts        # ThemeConfig → BuiltTheme 오케스트레이터
-    css.ts          # CSS 변수 방출 + 토큰 JSON 내보내기
+    css.ts          # CSS 변수 방출(유체 타입·탭 바닥값) + 토큰 JSON 내보내기
   themes/      # ★ 디자인 시스템들이 사는 곳 (1테마 = 1객체)
-  ui/          # 파라미터화된 컴포넌트 16종
+  ui/          # 파라미터화된 컴포넌트 + 반응형 레이아웃 프리미티브
+    Layout.tsx      # Container · Stack · Grid · Cluster (반응형 prop)
     styles/         # 컴포넌트별 CSS (교체 가능 단위)
   diagram/     # 전문가 모드: 순서도·시퀀스·상태머신 (자동 레이아웃 + SVG 내보내기)
   demo/        # 쇼케이스 + 테마 랩
@@ -280,6 +349,7 @@ src/
 
 Button · Badge · Card · Input · Textarea · Select · Field · Checkbox · Radio · Switch ·
 Alert · Tabs · Dialog · Table · Avatar · Progress · Skeleton · Separator · Kbd · Spinner · Tooltip
+**+ Container · Stack · Grid · Cluster** (반응형 레이아웃) · **DataTable**(모바일 스택)
 **+ FlowDiagram · SequenceDiagram** (전문가 모드)
 
 전부 네이티브 요소 기반(접근성 내장), 토큰만 소비, 변형/톤/크기 파라미터화.
